@@ -17,15 +17,24 @@ public class UserRoleController {
     public UserRoleController(UserRoleService userRoleService) {
         this.userRoleService = userRoleService;
     }
+@RestController
+@RequestMapping("/api/user-roles")
+public class UserRoleController {
 
-    // Assign Role to User
-    @PostMapping
-    public ResponseEntity<UserRole> assignRole(
-            @RequestBody UserRole userRole) {
-        return ResponseEntity.ok(
-                userRoleService.assignRole(userRole)
-        );
+    private final UserRoleService userRoleService;
+
+    public UserRoleController(UserRoleService userRoleService) {
+        this.userRoleService = userRoleService;
     }
+
+    @PostMapping
+    public UserRole assignRoleToUser(
+            @RequestParam Long userId,
+            @RequestParam Long roleId) {
+
+        return userRoleService.assignRole(userId, roleId);
+    }
+}
 
     // Get Roles for a User
     @GetMapping("/user/{userId}")
