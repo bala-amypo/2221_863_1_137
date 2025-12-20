@@ -18,14 +18,11 @@ public class UserAccountController {
         this.userAccountService = userAccountService;
     }
 
-    // Create User
-    @PostMapping
-    public ResponseEntity<UserAccount> createUser(
-            @RequestBody UserAccount userAccount) {
-        return ResponseEntity.ok(
-                userAccountService.createUser(userAccount)
-        );
-    }
+   @PostMapping("/users")
+public UserAccount createUser(@RequestBody UserAccount user) {
+    return userAccountService.createUser(user);
+}
+
 
     // Get User by ID
     @GetMapping("/{id}")

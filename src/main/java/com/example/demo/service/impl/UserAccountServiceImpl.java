@@ -5,7 +5,7 @@ import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.service.UserAccountService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
@@ -16,10 +16,13 @@ public class UserAccountServiceImpl implements UserAccountService {
         this.userAccountRepository = userAccountRepository;
     }
 
+    
     @Override
-    public UserAccount createUser(UserAccount user) {
-        return userAccountRepository.save(user);
-    }
+public UserAccount createUser(UserAccount user) {
+    user.setId(null); // VERY IMPORTANT safety line
+    return userAccountRepository.save(user);
+}
+
 
     @Override
     public UserAccount getUserById(Long id) {
