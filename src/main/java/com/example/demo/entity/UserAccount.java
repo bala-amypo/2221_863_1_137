@@ -4,43 +4,26 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "user_accounts", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email")
-})
+@Table(name = "user_accounts")
 public class UserAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String fullName;
 
-    @Column(nullable = false)
-    private Boolean active = true;
+    private Boolean active;
 
-    @Column(nullable = false, updatable = false)
-    private Instant createdAt;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private Instant updatedAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+}
 
-    public UserAccount() {
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = Instant.now();
-    }
 
     // Getters and Setters
     public Long getId() {
