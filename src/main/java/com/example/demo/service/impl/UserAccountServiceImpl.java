@@ -5,7 +5,7 @@ import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.service.UserAccountService;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
@@ -16,18 +16,10 @@ public class UserAccountServiceImpl implements UserAccountService {
         this.userAccountRepository = userAccountRepository;
     }
 
-    
-   @Override
-public UserAccount createUser(UserAccount user) {
-    user.setId(null);   // 🔥 FORCE INSERT
-    return userAccountRepository.save(user);
-}
-
-
     @Override
-    public UserAccount getUserById(Long id) {
-        return userAccountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    public UserAccount createUser(UserAccount user) {
+        user.setId(null); // important
+        return userAccountRepository.save(user);
     }
 
     @Override
@@ -36,17 +28,23 @@ public UserAccount createUser(UserAccount user) {
     }
 
     @Override
+    public UserAccount getUserById(Long id) {
+        return userAccountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id " + id));
+    }
+
+    @Override
     public UserAccount updateUser(Long id, UserAccount user) {
         UserAccount existing = getUserById(id);
+        existing.setEmail(user.getEmail());
         existing.setFullName(user.getFullName());
-        existing.setActive(user.getActive());
+        existing.setActive(user.isActive());
         return userAccountRepository.save(existing);
     }
 
     @Override
-    public void deactivateUser(Long id) {
-        UserAccount user = getUserById(id);
-        user.setActive(false);
-        userAccountRepository.save(user);
+    public void deleteUser(Long id) {
+        UserAccount existing = getUserById(id);
+        userAccountRepository.delete(existing);
     }
 }
