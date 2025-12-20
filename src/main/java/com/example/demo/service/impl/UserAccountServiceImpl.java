@@ -17,9 +17,9 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     
-    @Override
+   @Override
 public UserAccount createUser(UserAccount user) {
-    user.setId(null); // VERY IMPORTANT safety line
+    user.setId(null);   // 🔥 FORCE INSERT
     return userAccountRepository.save(user);
 }
 
