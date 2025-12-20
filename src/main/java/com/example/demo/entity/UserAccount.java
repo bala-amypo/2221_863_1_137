@@ -1,10 +1,11 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
 
 @Entity
 @Table(name = "user_accounts")
@@ -22,15 +23,8 @@ public class UserAccount {
 
     private Boolean active;
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    // ✅ Getters and Setters INSIDE class
+    public UserAccount() {
+    }
 
     public Long getId() {
         return id;
@@ -62,13 +56,5 @@ public class UserAccount {
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
     }
 }
