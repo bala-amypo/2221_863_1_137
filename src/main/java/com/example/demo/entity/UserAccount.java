@@ -1,11 +1,7 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_accounts")
@@ -21,10 +17,13 @@ public class UserAccount {
     @Column(name = "full_name")
     private String fullName;
 
-    private Boolean active;
+    private boolean active;
 
-    public UserAccount() {
-    }
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    // ---------- GETTERS & SETTERS ----------
 
     public Long getId() {
         return id;
@@ -50,11 +49,28 @@ public class UserAccount {
         this.fullName = fullName;
     }
 
-    public Boolean getActive() {
+    // ✅ IMPORTANT FIX
+    public boolean isActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
