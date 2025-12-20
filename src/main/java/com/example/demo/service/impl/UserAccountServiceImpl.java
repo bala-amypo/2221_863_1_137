@@ -23,7 +23,8 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserAccount getUserById(Long id) {
-        return userAccountRepository.findById(id).orElseThrow();
+        return userAccountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
     @Override
