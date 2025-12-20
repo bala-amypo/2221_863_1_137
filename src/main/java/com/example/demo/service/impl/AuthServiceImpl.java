@@ -33,13 +33,13 @@ public class AuthServiceImpl implements AuthService {
 
         userAccountRepository.save(user);
 
-        String token = jwtUtil.generateToken(new HashMap<>(), request.getEmail());
+        String token = jwtUtil.generateToken(request.getEmail());
         return new AuthResponseDto(token);
     }
 
     @Override
     public AuthResponseDto login(AuthRequestDto request) {
-        String token = jwtUtil.generateToken(new HashMap<>(), request.getEmail());
+        String token = jwtUtil.generateToken(request.getEmail());
         return new AuthResponseDto(token);
     }
 }
