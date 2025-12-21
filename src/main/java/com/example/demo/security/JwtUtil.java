@@ -6,7 +6,7 @@ import java.util.Map;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-@Component
+
 public class JwtUtil {
 
     private final String SECRET = "saas-secret-key";
