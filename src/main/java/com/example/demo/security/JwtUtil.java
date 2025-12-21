@@ -1,4 +1,4 @@
-package com.example.demo.security;
+package com.example.demo.security.JwtUtil;
 
 import java.util.Date;
 import java.util.Map;
