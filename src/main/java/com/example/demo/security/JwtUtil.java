@@ -3,17 +3,17 @@ package com.example.demo.security;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+@Component   // 🔥 THIS IS MANDATORY
 public class JwtUtil {
 
     private final String SECRET = "saas-secret-key";
     private final long EXPIRATION = 1000 * 60 * 60;
-
-    // REQUIRED: no-arg constructor
-    public JwtUtil() {}
 
     public String generateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
@@ -34,11 +34,10 @@ public class JwtUtil {
     }
 
     public Claims getClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
-    }
-
-    public long getExpirationMillis() {
-        return EXPIRATION;
+        return Jwts.parser()
+                .setSigningKey(SECRET)
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private boolean isTokenExpired(String token) {
