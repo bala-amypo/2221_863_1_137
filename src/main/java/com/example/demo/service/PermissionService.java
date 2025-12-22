@@ -7,11 +7,11 @@ public interface PermissionService {
 
     Permission createPermission(Permission permission);
 
-    List<Permission> getAllPermissions();
+    Permission updatePermission(Long id, Permission permission);
 
     Permission getPermissionById(Long id);
 
-    Permission updatePermission(Long id, Permission permission);
+    List<Permission> getAllPermissions();
 
-    void deactivatePermission(Long id);
+    Permission deactivatePermission(Long id);
 }
