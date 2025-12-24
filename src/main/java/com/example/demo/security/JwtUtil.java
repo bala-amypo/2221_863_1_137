@@ -3,16 +3,14 @@ package com.example.demo.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
 
 @Component
 public class JwtUtil {
-    private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final String secret = "myVeryLongSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm";
     private final long expirationMillis = 86400000; // 24 hours
     
     public String generateToken(Map<String, Object> claims, String subject) {
@@ -21,7 +19,7 @@ public class JwtUtil {
                 .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
-                .signWith(key)
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
     
@@ -38,9 +36,8 @@ public class JwtUtil {
     }
     
     private Claims getClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
+        return Jwts.parser()
+                .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
     }
