@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
-    private final String secret = "myVeryLongSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm";
+    private final String secret = "myVeryLongSecretKeyThatIsAtLeast256BitsLongForHS256AlgorithmAndMustBeSecureEnoughForJWTTokenGeneration";
     private final long expirationMillis = 86400000; // 24 hours
     
     public String generateToken(Map<String, Object> claims, String subject) {
