@@ -7,10 +7,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Base64;
 
 @Component
 public class JwtUtil {
-    private final String secret = "mySecretKeyForJWTTokenGenerationThatMustBeAtLeast256BitsLongToMeetHS256AlgorithmSecurityRequirementsAndShouldBeSecureEnough";
+    private final byte[] secretKey = Base64.getDecoder().decode("bXlTZWNyZXRLZXlGb3JKV1RUb2tlbkdlbmVyYXRpb25UaGF0TXVzdEJlQXRMZWFzdDI1NkJpdHNMb25n");
     private final long expirationMillis = 86400000; // 24 hours
     
     public String generateToken(Map<String, Object> claims, String subject) {
@@ -19,7 +20,7 @@ public class JwtUtil {
                 .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
     
@@ -37,7 +38,7 @@ public class JwtUtil {
     
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
     }
