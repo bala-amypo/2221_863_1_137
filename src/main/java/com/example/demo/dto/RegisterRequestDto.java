@@ -6,7 +6,8 @@ public class RegisterRequestDto {
     private String password;
     private String email;
 
-    public RegisterRequestDto() {}
+    public RegisterRequestDto() {
+    }
 
     public RegisterRequestDto(String username, String password, String email) {
         this.username = username;
