@@ -1,9 +1,5 @@
-@Service
-public class AuthService {
+package com.example.demo.service;
 
-    private static final String FIXED_PASSWORD = "password";
-
-    public boolean login(String username, String password) {
-        return FIXED_PASSWORD.equals(password);
-    }
+public interface AuthService {
+    boolean login(String username, String password);
 }
