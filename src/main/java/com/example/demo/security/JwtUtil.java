@@ -2,61 +2,52 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
+import io.jsonwebtoken.SignatureAlgorithm;
 
-import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
 
-@Component
 public class JwtUtil {
 
-    // MUST be at least 256 bits for HS256
-    private static final String SECRET =
-            "saas-secret-key-saas-secret-key-saas-secret-key";
-    private static final long EXPIRATION = 1000 * 60 * 60; // 1 hour
+    private static final String SECRET_KEY = "my-secret-key";
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
 
-    private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    // REQUIRED no-arg constructor (tests expect this)
+    public JwtUtil() {
+    }
 
-    public JwtUtil() {}
-
+    // Generate JWT token
     public String generateToken(Map<String, Object> claims, String username) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(key)   // ✅ NO DatatypeConverter used
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
-    // Tests expect BOTH names
+    // Extract username
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
 
-    public String getUsername(String token) {
-        return extractUsername(token);
-    }
-
+    // Validate token
     public boolean isTokenValid(String token, String username) {
-        return extractUsername(token).equals(username) && !isTokenExpired(token);
+        String tokenUsername = extractUsername(token);
+        return tokenUsername.equals(username) && !isTokenExpired(token);
     }
 
-    public long getExpirationMillis() {
-        return EXPIRATION;
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
+    // ================= PRIVATE METHODS =================
 
     private boolean isTokenExpired(String token) {
         return extractAllClaims(token).getExpiration().before(new Date());
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
