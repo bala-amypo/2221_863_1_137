@@ -5,7 +5,8 @@ public class AuthRequestDto {
     private String username;
     private String password;
 
-    public AuthRequestDto() {}
+    public AuthRequestDto() {
+    }
 
     public AuthRequestDto(String username, String password) {
         this.username = username;
@@ -28,4 +29,3 @@ public class AuthRequestDto {
         this.password = password;
     }
 }
-`
