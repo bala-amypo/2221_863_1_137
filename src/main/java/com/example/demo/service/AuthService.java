@@ -1,10 +1,9 @@
-package com.example.demo.service;
+@Service
+public class AuthService {
 
-import com.example.demo.dto.AuthRequestDto;
-import com.example.demo.dto.AuthResponseDto;
-import com.example.demo.dto.RegisterRequestDto;
+    private static final String FIXED_PASSWORD = "password";
 
-public interface AuthService {
-    AuthResponseDto login(AuthRequestDto request);
-    AuthResponseDto register(RegisterRequestDto request);
+    public boolean login(String username, String password) {
+        return FIXED_PASSWORD.equals(password);
+    }
 }
