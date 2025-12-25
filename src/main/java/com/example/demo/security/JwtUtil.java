@@ -12,8 +12,9 @@ import java.util.Map;
 public class JwtUtil {
 
     private static final String SECRET = "saas-secret-key";
-    private static final long EXPIRATION = 1000 * 60 * 60;
+    private static final long EXPIRATION = 1000 * 60 * 60; // 1 hour
 
+    // REQUIRED by tests
     public JwtUtil() {}
 
     public String generateToken(Map<String, Object> claims, String username) {
@@ -26,12 +27,13 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String extractUsername(String token) {
+    // TESTS EXPECT THIS METHOD NAME
+    public String getUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
 
     public boolean isTokenValid(String token, String username) {
-        return extractUsername(token).equals(username) && !isTokenExpired(token);
+        return getUsername(token).equals(username) && !isTokenExpired(token);
     }
 
     public long getExpirationMillis() {
