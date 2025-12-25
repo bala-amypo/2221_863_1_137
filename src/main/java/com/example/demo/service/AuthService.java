@@ -9,5 +9,5 @@ public interface AuthService {
 
     boolean login(AuthRequestDto authRequestDto);
 
-    boolean register(RegisterRequestDto registerRequestDto);
+    String register(RegisterRequestDto registerRequestDto);
 }
