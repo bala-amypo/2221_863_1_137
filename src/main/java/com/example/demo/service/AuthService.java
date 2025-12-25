@@ -7,7 +7,7 @@ public interface AuthService {
 
     boolean login(String username, String password);
 
-    boolean login(AuthRequestDto authRequestDto);
+    String login(AuthRequestDto authRequestDto);
 
     String register(RegisterRequestDto registerRequestDto);
 }
