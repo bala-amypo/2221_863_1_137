@@ -12,11 +12,8 @@ public class JwtUtil {
     private static final String SECRET_KEY = "my-secret-key";
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
 
-    // REQUIRED no-arg constructor (tests expect this)
-    public JwtUtil() {
-    }
+    public JwtUtil() { }
 
-    // Generate JWT token
     public String generateToken(Map<String, Object> claims, String username) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -27,18 +24,25 @@ public class JwtUtil {
                 .compact();
     }
 
-    // Extract username
+    // Existing method
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
 
-    // Validate token
+    // New method expected by your tests
+    public String getUsername(String token) {
+        return extractUsername(token); // just delegate
+    }
+
+    // New method expected by your tests
+    public long getExpirationMillis() {
+        return EXPIRATION_TIME;
+    }
+
     public boolean isTokenValid(String token, String username) {
         String tokenUsername = extractUsername(token);
         return tokenUsername.equals(username) && !isTokenExpired(token);
     }
-
-    // ================= PRIVATE METHODS =================
 
     private boolean isTokenExpired(String token) {
         return extractAllClaims(token).getExpiration().before(new Date());
