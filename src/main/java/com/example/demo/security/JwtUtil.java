@@ -2,17 +2,22 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
 
 @Component
 public class JwtUtil {
 
-    private static final String SECRET = "saas-secret-key";
+    // MUST be at least 256 bits for HS256
+    private static final String SECRET =
+            "saas-secret-key-saas-secret-key-saas-secret-key";
     private static final long EXPIRATION = 1000 * 60 * 60; // 1 hour
+
+    private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
     public JwtUtil() {}
 
@@ -22,16 +27,15 @@ public class JwtUtil {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(SignatureAlgorithm.HS256, SECRET)
+                .signWith(key)   // ✅ NO DatatypeConverter used
                 .compact();
     }
 
-    // 🔥 Tests expect THIS name
+    // Tests expect BOTH names
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
 
-    // 🔥 Tests ALSO expect THIS name
     public String getUsername(String token) {
         return extractUsername(token);
     }
@@ -45,8 +49,9 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET)
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
