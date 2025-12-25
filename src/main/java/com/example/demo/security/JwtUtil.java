@@ -12,9 +12,8 @@ import java.util.Map;
 public class JwtUtil {
 
     private static final String SECRET = "saas-secret-key";
-    private static final long EXPIRATION = 1000 * 60 * 60; // 1 hour
+    private static final long EXPIRATION = 1000 * 60 * 60;
 
-    // REQUIRED by tests
     public JwtUtil() {}
 
     public String generateToken(Map<String, Object> claims, String username) {
