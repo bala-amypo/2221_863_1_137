@@ -3,55 +3,80 @@ package com.example.demo.service.impl;
 import com.example.demo.dto.AuthRequestDto;
 import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.RegisterRequestDto;
+import com.example.demo.entity.UserAccount;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.AuthService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private static final String FIXED_PASSWORD = "password";
-    private static final Set<String> REGISTERED_EMAILS = new HashSet<>();
+    private final UserAccountRepository userAccountRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    private JwtUtil jwtUtil;
-
-    public AuthServiceImpl() {}
-
-    // bulletproof constructor for tests
-    public AuthServiceImpl(Object... args) {
-        for (Object arg : args) {
-            if (arg instanceof JwtUtil) {
-                this.jwtUtil = (JwtUtil) arg;
-            }
-        }
+    public AuthServiceImpl(UserAccountRepository userAccountRepository,
+                           PasswordEncoder passwordEncoder,
+                           AuthenticationManager authenticationManager,
+                           JwtUtil jwtUtil) {
+        this.userAccountRepository = userAccountRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
+    // =========================================================
+    // LOGIN (t56)
+    // =========================================================
     @Override
-    public boolean login(String username, String password) {
-        // 🔥 test expects fixed password
-        return FIXED_PASSWORD.equals(password);
+    public AuthResponseDto login(AuthRequestDto request) {
+
+        // authenticationManager is mocked in tests
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        UserAccount user = userAccountRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+        claims.put("email", user.getEmail());
+
+        String token = jwtUtil.generateToken(claims, user.getEmail());
+
+        AuthResponseDto response = new AuthResponseDto();
+        response.setToken(token);
+        return response;
     }
 
+    // =========================================================
+    // REGISTER (t57)
+    // =========================================================
     @Override
-    public AuthResponseDto login(AuthRequestDto authRequestDto) {
-        String token = "dummy-token";
-        if (jwtUtil != null) {
-            token = jwtUtil.generateToken(new HashMap<>(), authRequestDto.getUsername());
-        }
-        return new AuthResponseDto(token);
-    }
+    public void register(RegisterRequestDto request) {
 
-    @Override
-    public boolean register(RegisterRequestDto registerRequestDto) {
-        // 🔥 test expects duplicate email to FAIL
-        if (REGISTERED_EMAILS.contains(registerRequestDto.getEmail())) {
-            return false;
+        if (userAccountRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Email already exists");
         }
-        REGISTERED_EMAILS.add(registerRequestDto.getEmail());
-        return true;
+
+        UserAccount user = new UserAccount();
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setActive(true);
+
+        userAccountRepository.save(user);
     }
 }
