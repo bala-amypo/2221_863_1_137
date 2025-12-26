@@ -6,9 +6,16 @@ import com.example.demo.dto.RegisterRequestDto;
 
 public interface AuthService {
 
-    boolean login(String username, String password);
+    /**
+     * Login user and return JWT token
+     * Used in test: t56_authService_loginSuccessWithFixedPassword
+     */
+    AuthResponseDto login(AuthRequestDto request);
 
-    AuthResponseDto login(AuthRequestDto authRequestDto);
-
-    boolean register(RegisterRequestDto registerRequestDto);
+    /**
+     * Register user
+     * Used in test: t57_authService_registerDuplicateEmailFails
+     * Must return void
+     */
+    void register(RegisterRequestDto request);
 }
